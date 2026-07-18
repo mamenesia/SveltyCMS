@@ -367,9 +367,9 @@ export async function loginAsAdmin(page: Page, waitForUrl?: string | RegExp) {
   const email = ADMIN_CREDENTIALS.email;
   const password = ADMIN_CREDENTIALS.password;
 
-  // Prefer existing storageState / cookie jar from auth-setup — avoid re-seed races.
+  // Prefer existing storageState — probe / (collectionbuilder often 500s post-setup).
   try {
-    await page.goto("/config/collectionbuilder", {
+    await page.goto("/", {
       waitUntil: "domcontentloaded",
       timeout: 20_000,
     });
@@ -404,7 +404,7 @@ export async function loginAsAdmin(page: Page, waitForUrl?: string | RegExp) {
     }
     if (loginRes.ok()) {
       console.log("[Auth] ✓ Admin session via testing API");
-      const target = typeof waitForUrl === "string" ? waitForUrl : "/config/collectionbuilder";
+      const target = typeof waitForUrl === "string" ? waitForUrl : "/";
       await page.goto(target, {
         waitUntil: "domcontentloaded",
         timeout: 30_000,
